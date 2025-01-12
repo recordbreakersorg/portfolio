@@ -3,6 +3,19 @@
 	import {MEMBERS} from "$lib/team.ts";
 	import { onMount } from 'svelte';
 
+	const
+		ZOOM_RATIO = 30,
+		ZOOM_DISTANCE = 250;
+
+	function horizontal_distance(pos: Number, width: Number, x: Number): Number {
+		pos += width/2;
+		return x < pos?
+			pos - x:
+			x < pos + width?
+				0:
+				x - pos - width;
+	}
+
 	onMount(() => {
 		document.getElementById("members").onmousemove = (e) => {
 			const
@@ -10,8 +23,9 @@
 				y = e.screenY;
 			for(let elt of document.getElementsByClassName("member-profile")) {
 				const rect = elt.getBoundingClientRect();
-				let difference = Math.abs(rect.x - x);
-				let zoom = 130 - 30*(difference / 500);
+				const distance = horizontal_distance(rect.x, rect.width, x);
+				const difference = Math.min(distance, ZOOM_DISTANCE);
+				let zoom = ZOOM_RATIO + 100 - ZOOM_RATIO*(difference / ZOOM_DISTANCE);
 				elt.style.zoom = `${zoom}%`;
 			}
 		}
