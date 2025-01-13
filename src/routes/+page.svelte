@@ -1,54 +1,58 @@
 <script lang="ts">
-	import Logo from "$lib/Logo.svelte";
+	import Logo from '$lib/Logo.svelte';
 	import { onMount } from 'svelte';
 	import SvelteMarkdown from 'svelte-markdown';
 	type ColorTuple = any;
 	/** @type {{ data: import('./$types').PageData }} */
-	const {  data  }  = $props();
+	const { data } = $props();
 	const { members, team_bio } = data;
 	type IntersectionObserverOptions = {
-		root: HTMLElement,
-		rootMargin: string,
-		threshold: number | number[],
+		root: HTMLElement;
+		rootMargin: string;
+		threshold: number | number[];
 	};
-	onMount(function(): () => void {
-		const container = document.querySelector("div[member-bios]");
+	onMount(function (): () => void {
+		const container = document.querySelector('div[member-bios]');
 		const defaul_color = container.style.backgroundColor;
-		for(const elt of document.getElementsByClassName("member-bio")) {
+		for (const elt of document.getElementsByClassName('member-bio')) {
 			//const bottomHold = screen.availHeight / 3;
 			//const rects = elt.getBoundingClientRect();
 			//const threshold = Math.min(bottomHold / rects.height, 1);
-			const [r, g, b]: ColorTuple = members[elt.getAttribute("member-id")].color;
+			const [r, g, b]: ColorTuple = members[elt.getAttribute('member-id')].color;
 			const focus_color = `rgba(${r}, ${g}, ${b}, 0.2)`;
 			elt.style.borderColor = focus_color;
-			const observer = new IntersectionObserver(function(entries, observer) {
-				entries.forEach(function(entry) {
-					// Each entry describes an intersection change for one observed
-					    // target element:
-					    //   entry.boundingClientRect
-					    //   entry.intersectionRatio
-					    //   entry.intersectionRect
-					    //   entry.isIntersecting
-					    //   entry.rootBounds
-					    //   entry.target
-					    //   entry.time
-					if(entry.isIntersecting && entry.intersectionRatio != 0) {
-						setTimeout(function() {
-							container.style.backgroundColor = focus_color;
-							elt.style.opacity = 1;
-						}, 10);
-					}
-				});
-			}, {
-				root: document.querySelector("#scrollArea"),
-				rootMargin: "0px",
-				threshold: 1,
-			});
-			observer.observe(elt.querySelector("img"));
+			const observer = new IntersectionObserver(
+				function (entries, observer) {
+					entries.forEach(function (entry) {
+						// Each entry describes an intersection change for one observed
+						// target element:
+						//   entry.boundingClientRect
+						//   entry.intersectionRatio
+						//   entry.intersectionRect
+						//   entry.isIntersecting
+						//   entry.rootBounds
+						//   entry.target
+						//   entry.time
+						if (entry.isIntersecting && entry.intersectionRatio != 0) {
+							setTimeout(function () {
+								container.style.backgroundColor = focus_color;
+								elt.style.opacity = 1;
+							}, 10);
+						}
+					});
+				},
+				{
+					root: document.querySelector('#scrollArea'),
+					rootMargin: '0px',
+					threshold: 1
+				}
+			);
+			observer.observe(elt.querySelector('img'));
 		}
-		return () => window.onscroll = undefined;
+		return () => (window.onscroll = undefined);
 	});
 </script>
+
 <main class="w3-text-white">
 	<div id="hero" class="w3-center w3-container">
 		<div space></div>
@@ -60,12 +64,8 @@
 			/>
 		</div>
 		<h1 class="w3-margin">
-			<span>
-				The
-			</span>
-			<span class="w3-block nova-cut">
-				Record Breakers
-			</span>
+			<span> The </span>
+			<span class="w3-block nova-cut"> Record Breakers </span>
 		</h1>
 	</div>
 	<div team-bio>
@@ -75,11 +75,7 @@
 		{#each members as member, index}
 			<div member-bio member-id={index} class="member-bio w3-container">
 				<div member-bio-header>
-					<img
-						src={member.profile}
-						alt={member.name + "'s profile"}
-						member-bio-profile
-					/>
+					<img src={member.profile} alt={member.name + "'s profile"} member-bio-profile />
 					<h3 member-bio-name>{member.name}</h3>
 				</div>
 				<div member-bio-desc class="w3-container">
@@ -89,6 +85,7 @@
 		{/each}
 	</div>
 </main>
+
 <style lang="sass">
 	div[member-bio]
 		margin: auto
@@ -140,4 +137,3 @@
 			family: 'Nova Cut'
 			size: 3em
 </style>
-
